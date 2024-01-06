@@ -25,8 +25,8 @@ createApp({
           document.cookie = `yu-t-200053=${token};expires=${new Date(
             expired
           )};`;
-          //   登入成功就跳到產品頁
-          window.location = "../w1/products.html";
+          // 登入成功就跳到產品頁
+          window.location = "products.html";
         })
         .catch((err) => {
           alert(err.response.data.message);
