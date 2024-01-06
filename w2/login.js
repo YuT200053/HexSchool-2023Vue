@@ -26,7 +26,7 @@ createApp({
             expired
           )};`;
           //   登入成功就跳到產品頁
-          window.location = "product.html";
+          window.location = "../w1/products.html";
         })
         .catch((err) => {
           alert(err.response.data.message);
