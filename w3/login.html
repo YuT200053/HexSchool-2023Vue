@@ -17,8 +17,10 @@
       <div class="container">
         <div class="row">
           <h1 class="h3 mb-3">請先登入</h1>
-          <form class="form-signin">
+          <!-- 當表單按下 submit 觸發方法 -->
+          <form class="form-signin" @submit.prevent="login">
             <div class="form-floating mb-3">
+              <!-- input 要雙向綁定 user data -->
               <input
                 type="email"
                 name="email"
@@ -26,6 +28,7 @@
                 class="form-control"
                 placeholder="abc@example.com"
                 required
+                v-model="user.username"
               />
               <label for="username">Email address</label>
             </div>
@@ -36,6 +39,7 @@
                 id="password"
                 class="form-control"
                 placeholder="abc123"
+                v-model="user.password"
               />
               <label for="password">Password</label>
             </div>
