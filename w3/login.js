@@ -32,5 +32,4 @@ createApp({
         });
     },
   },
-  mounted() {},
 }).mount("#app");
