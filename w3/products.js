@@ -6,6 +6,8 @@ createApp({
       // 登入驗證的資料
       apiUrl: "https://vue3-course-api.hexschool.io/v2",
       apiPath: "yu-t-200053",
+      // 產品資料存放空間
+      products: [],
     };
   },
   methods: {
@@ -27,7 +29,16 @@ createApp({
     },
     // 取得產品資料
     getData() {
-      console.log("取得資料中");
+      const url = `${this.apiUrl}/api/${this.apiPath}/admin/products`;
+
+      axios
+        .get(url)
+        .then((res) => {
+          this.products = res.data.products;
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     },
   },
   mounted() {

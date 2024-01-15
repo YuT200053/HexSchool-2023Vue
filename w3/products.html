@@ -29,18 +29,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td></td>
-              <td></td>
-              <td class="text-end">1</td>
-              <td class="text-end">2</td>
+            <!-- 渲染產品列表 -->
+            <tr v-for="product in products" :key="product.name">
+              <td>{{ product.category }}</td>
+              <td>{{ product.title }}</td>
+              <td class="text-end">{{ product.origin_price }}</td>
+              <td class="text-end">{{ product.price }}</td>
               <td>
+                <!-- 如果 is_enabled 是 true 則啟用，反之未啟用 -->
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-success btn-sm">
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    :class="{'btn-success': product.is_enabled, 'btn-outline-success': !product.is_enabled}"
+                  >
                     啟用</button
                   ><button
                     type="button"
-                    class="btn btn-outline-secondary btn-sm"
+                    class="btn btn-sm"
+                    :class="{'btn-secondary': !product.is_enabled, 'btn-outline-secondary': product.is_enabled}"
                   >
                     未啟用
                   </button>
