@@ -1,5 +1,7 @@
 import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.11/vue.esm-browser.min.js";
 
+let productModal = null;
+
 createApp({
   data() {
     return {
@@ -8,6 +10,10 @@ createApp({
       apiPath: "yu-t-200053",
       // 產品資料存放空間
       products: [],
+      tempProduct: {
+        imagesUrl: [],
+      },
+      isNew: false,
     };
   },
   methods: {
@@ -40,6 +46,27 @@ createApp({
           alert(err.response.data.message);
         });
     },
+    // 新增產品
+    addProduct() {
+      this.isNew = true;
+      let url = `${this.apiUrl}/api/${this.apiPath}/admin/product`;
+
+      axios
+        .post(url, { data: this.tempProduct })
+        .then((res) => {
+          alert(res.data.message);
+          productModal.hide();
+          this.getData();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    // 編輯產品
+    updateProduct(product) {
+      this.isNew = false;
+      this.tempProduct = { ...product };
+    },
   },
   mounted() {
     // 一跳到產品頁就要執行登入驗證
@@ -52,5 +79,9 @@ createApp({
     axios.defaults.headers.common.Authorization = token;
     // 確認是否是管理員
     this.checkAdmin();
+    // 感覺應該是要偵測 modal? 不確定 keyboard 是做什麼的?
+    productModal = new bootstrap.Modal(document.getElementById("addProduct"), {
+      keyboard: false,
+    });
   },
 }).mount("#app");
