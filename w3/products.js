@@ -33,9 +33,24 @@ createApp({
           window.location = "login.html";
         });
     },
+    // 呼叫 modal，因為需要重整暫存資料，所以統一在點擊按鈕時進行判斷並重置 tempProduct
+    openModal(isNew, item) {
+      if (isNew === "new") {
+        this.isNew = true;
+        this.tempProduct = {
+          imagesUrl: [],
+        };
+        productModal.show();
+      } else if (isNew === "edit") {
+        this.isNew = false;
+        this.tempProduct = { ...item };
+        this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
+        productModal.show();
+      }
+    },
     // 取得產品資料
     getData() {
-      const url = `${this.apiUrl}/api/${this.apiPath}/admin/products`;
+      const url = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
 
       axios
         .get(url)
@@ -49,6 +64,9 @@ createApp({
     // 新增產品
     addProduct() {
       this.isNew = true;
+      this.tempProduct = {
+        imagesUrl: [],
+      };
       let url = `${this.apiUrl}/api/${this.apiPath}/admin/product`;
 
       axios
@@ -63,9 +81,29 @@ createApp({
         });
     },
     // 編輯產品
-    updateProduct(product) {
+    editProduct(product) {
       this.isNew = false;
       this.tempProduct = { ...product };
+      // 因為 v-model 雙向綁定，因此也要定義圖片連結的資料
+      this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
+      console.log(this.tempProduct);
+    },
+    // 更新資料
+    updateProduct(product) {
+      let url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
+
+      console.log(url);
+
+      axios
+        .put(url, { data: this.tempProduct })
+        .then((res) => {
+          alert(res.data.message);
+          productModal.hide();
+          this.getData();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     },
   },
   mounted() {

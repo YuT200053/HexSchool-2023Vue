@@ -15,12 +15,11 @@
     <div id="app">
       <div class="container">
         <div class="mt-4 text-end">
+          <!-- 開啟新增產品的 modal，暫存資料為空 -->
           <button
             type="button"
             class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#addProduct"
-            @click.prevent="isNew = true"
+            @click.prevent="openModal('new')"
           >
             建立新的產品
           </button>
@@ -63,12 +62,11 @@
               </td>
               <td>
                 <div class="btn-group" role="group">
+                  <!-- 開啟編輯產品的 modal，暫存資料為點擊 product -->
                   <button
                     type="button"
                     class="btn btn-outline-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addProduct"
-                    @click.prevent="updateProduct(product)"
+                    @click.prevent="openModal('edit', product)"
                   >
                     編輯</button
                   ><button type="button" class="btn btn-outline-danger btn-sm">
@@ -250,7 +248,7 @@
                 <button
                   type="button"
                   class="btn btn-primary"
-                  @click.prevent="isNew ? addProduct() : updateProduct()"
+                  @click.prevent="updateProduct(tempProduct)"
                 >
                   確認
                 </button>
