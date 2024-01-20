@@ -67,7 +67,27 @@ createApp({
       }
     },
     // 新增產品 或 編輯產品
+    updateProduct() {
+      // 預設為新增資料
+      let url = `${this.apiUrl}/api/${this.apiPath}/admin/product`;
+      let http = "post";
 
+      // 判斷是不是新產品，如果不是就變成編輯產品
+      if (!this.isNew) {
+        let url = `${this.apiUrl}/api/${this.apiPath}/admin/product//${this.tempProduct.id}`;
+        let http = "put";
+      }
+
+      axios[http](url, { data: this.tempProduct })
+        .then((res) => {
+          alert(res.data.message);
+          productModal.hide();
+          this.getData();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
     // 刪除產品
     deleteProduct() {
       const url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
