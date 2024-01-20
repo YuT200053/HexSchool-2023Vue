@@ -45,19 +45,9 @@
               <td>
                 <!-- 如果 is_enabled 是 true 則啟用，反之未啟用 -->
                 <div class="btn-group" role="group">
-                  <button
-                    type="button"
-                    class="btn btn-sm"
-                    :class="{'btn-success': product.is_enabled, 'btn-outline-success': !product.is_enabled}"
-                  >
-                    啟用</button
-                  ><button
-                    type="button"
-                    class="btn btn-sm"
-                    :class="{'btn-secondary': !product.is_enabled, 'btn-outline-secondary': product.is_enabled}"
-                  >
-                    未啟用
-                  </button>
+                  <span class="text-success" v-if="product.is_enabled"
+                    >啟用</span
+                  ><span class="text-secondary" v-else>未啟用</span>
                 </div>
               </td>
               <td>
@@ -69,7 +59,11 @@
                     @click.prevent="openModal('edit', product)"
                   >
                     編輯</button
-                  ><button type="button" class="btn btn-outline-danger btn-sm">
+                  ><button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    @click.prevent="openModal('delete', product)"
+                  >
                     刪除
                   </button>
                 </div>
@@ -251,6 +245,52 @@
                   @click.prevent="updateProduct(tempProduct)"
                 >
                   確認
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- modal 刪除產品 -->
+        <div
+          class="modal fade"
+          id="deleteProduct"
+          tabindex="-1"
+          aria-labelledby="deleteModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header bg-danger">
+                <div class="modal-title text-white">刪除產品</div>
+                <!-- 關閉的叉叉 -->
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  是否刪除
+                  <strong class="text-danger"> {{ tempProduct.title }} </strong>
+                  商品 ( 刪除後將無法恢復 )。
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  取消
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  @click.prevent="deleteProduct"
+                >
+                  確認刪除
                 </button>
               </div>
             </div>

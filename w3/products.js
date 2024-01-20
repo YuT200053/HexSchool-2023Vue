@@ -1,6 +1,7 @@
 import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.11/vue.esm-browser.min.js";
 
 let productModal = null;
+let deleteModal = null;
 
 createApp({
   data() {
@@ -33,21 +34,6 @@ createApp({
           window.location = "login.html";
         });
     },
-    // 呼叫 modal，因為需要重整暫存資料，所以統一在點擊按鈕時進行判斷並重置 tempProduct
-    openModal(isNew, item) {
-      if (isNew === "new") {
-        this.isNew = true;
-        this.tempProduct = {
-          imagesUrl: [],
-        };
-        productModal.show();
-      } else if (isNew === "edit") {
-        this.isNew = false;
-        this.tempProduct = { ...item };
-        this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
-        productModal.show();
-      }
-    },
     // 取得產品資料
     getData() {
       const url = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
@@ -61,44 +47,37 @@ createApp({
           alert(err.response.data.message);
         });
     },
-    // 新增產品
-    addProduct() {
-      this.isNew = true;
-      this.tempProduct = {
-        imagesUrl: [],
-      };
-      let url = `${this.apiUrl}/api/${this.apiPath}/admin/product`;
+    // 呼叫 modal，因為需要重整暫存資料，所以統一在點擊按鈕時進行判斷並重置 tempProduct
+    openModal(isNew, item) {
+      if (isNew === "new") {
+        this.isNew = true;
+        this.tempProduct = {
+          imagesUrl: [],
+        };
+        productModal.show();
+      } else if (isNew === "edit") {
+        this.isNew = false;
+        this.tempProduct = { ...item };
+        this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
+        productModal.show();
+      } else if (isNew === "delete") {
+        this.tempProduct = { ...item };
+        this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
+        deleteModal.show();
+      }
+    },
+    // 新增產品 或 編輯產品
+
+    // 刪除產品
+    deleteProduct() {
+      const url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
 
       axios
-        .post(url, { data: this.tempProduct })
+        .delete(url)
         .then((res) => {
           alert(res.data.message);
-          productModal.hide();
-          this.getData();
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-        });
-    },
-    // 編輯產品
-    editProduct(product) {
-      this.isNew = false;
-      this.tempProduct = { ...product };
-      // 因為 v-model 雙向綁定，因此也要定義圖片連結的資料
-      this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
-      console.log(this.tempProduct);
-    },
-    // 更新資料
-    updateProduct(product) {
-      let url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
-
-      console.log(url);
-
-      axios
-        .put(url, { data: this.tempProduct })
-        .then((res) => {
-          alert(res.data.message);
-          productModal.hide();
+          deleteModal.hide();
+          // 重新渲染產品列表
           this.getData();
         })
         .catch((err) => {
@@ -121,5 +100,11 @@ createApp({
     productModal = new bootstrap.Modal(document.getElementById("addProduct"), {
       keyboard: false,
     });
+    deleteModal = new bootstrap.Modal(
+      document.getElementById("deleteProduct"),
+      {
+        keyboard: false,
+      }
+    );
   },
 }).mount("#app");
