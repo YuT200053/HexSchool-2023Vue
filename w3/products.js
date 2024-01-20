@@ -73,9 +73,10 @@ createApp({
       let http = "post";
 
       // 判斷是不是新產品，如果不是就變成編輯產品
+      // 不用加 let，而是要賦予新的值
       if (!this.isNew) {
-        let url = `${this.apiUrl}/api/${this.apiPath}/admin/product//${this.tempProduct.id}`;
-        let http = "put";
+        url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
+        http = "put";
       }
 
       axios[http](url, { data: this.tempProduct })
