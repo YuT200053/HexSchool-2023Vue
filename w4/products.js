@@ -68,6 +68,43 @@ createApp({
         deleteModal.show();
       }
     },
+    // 刪除產品
+    deleteProduct() {
+      const url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
+
+      axios
+        .delete(url)
+        .then((res) => {
+          alert(res.data.message);
+          deleteModal.hide();
+          this.getData();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    // 新增 / 編輯產品
+    updateProduct() {
+      // 預設微新增產品
+      let url = `${this.apiUrl}/api/${this.apiPath}/admin/product`;
+      let http = "post";
+
+      // 判斷是否為編輯產品
+      if (!this.isNew) {
+        url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
+        http = "put";
+      }
+
+      axios[http](url, { data: this.tempProduct })
+        .then((res) => {
+          alert(res.data.message);
+          productModal.hide();
+          this.getData();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
   },
   mounted() {
     // 取出存在 cookie 中的 token 資料

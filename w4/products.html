@@ -198,7 +198,7 @@
                     <div class="col-6">
                       <label for="origin_price" class="form-label">原價</label
                       ><input
-                        type="text"
+                        type="number"
                         class="form-control"
                         id="origin_price"
                         placeholder="請輸入原價"
@@ -208,7 +208,7 @@
                     <div class="col-6">
                       <label for="price" class="form-label">售價</label
                       ><input
-                        type="text"
+                        type="number"
                         class="form-control"
                         id="price"
                         placeholder="請輸入售價"
@@ -250,7 +250,14 @@
                 >
                   取消
                 </button>
-                <button type="button" class="btn btn-primary">確認</button>
+                <!-- 因為新增和編輯是同一個 modal，因此要判斷是要 post 還是 put -->
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click.prevent="updateProduct"
+                >
+                  確認
+                </button>
               </div>
             </div>
           </div>
@@ -286,7 +293,13 @@
                 >
                   取消
                 </button>
-                <button type="button" class="btn btn-danger">確認刪除</button>
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  @click.prevent="deleteProduct"
+                >
+                  確認刪除
+                </button>
               </div>
             </div>
           </div>
