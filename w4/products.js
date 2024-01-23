@@ -1,5 +1,8 @@
 import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.11/vue.esm-browser.min.js";
 
+let productModal = null;
+let deleteModal = null;
+
 createApp({
   data() {
     return {
@@ -8,6 +11,10 @@ createApp({
       apiPath: "yu-t-200053",
       // 產品資料存放空間
       products: [],
+      tempProduct: {
+        imagesUrl: [],
+      },
+      isNew: false,
     };
   },
   methods: {
@@ -42,6 +49,25 @@ createApp({
           alert(err.response.data.message);
         });
     },
+    // 判斷開啟哪個 modal
+    openModal(isNew, item) {
+      if (isNew === "new") {
+        this.isNew = true;
+        this.tempProduct = {
+          imagesUrl: [],
+        };
+        productModal.show();
+      } else if (isNew === "edit") {
+        this.isNew = false;
+        this.tempProduct = { ...item };
+        this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
+        productModal.show();
+      } else if (isNew === "delete") {
+        this.tempProduct = { ...item };
+        this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
+        deleteModal.show();
+      }
+    },
   },
   mounted() {
     // 取出存在 cookie 中的 token 資料
@@ -53,5 +79,12 @@ createApp({
     axios.defaults.headers.common.Authorization = token;
     // 確認是否是管理員
     this.checkAdmin();
+
+    productModal = new bootstrap.Modal(document.getElementById("createModal"), {
+      keyboard: false,
+    });
+    deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"), {
+      keyboard: false,
+    });
   },
 }).mount("#app");

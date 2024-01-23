@@ -19,8 +19,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#createModal"
+            @click.prevent="openModal('new')"
           >
             建立新的產品
           </button>
@@ -49,13 +48,16 @@
               </th>
               <th class="text-center">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-outline-primary btn-sm">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    @click.prevent="openModal('edit', product)"
+                  >
                     編輯</button
                   ><button
                     type="button"
                     class="btn btn-outline-danger btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteModal"
+                    @click.prevent="openModal('delete', product)"
                   >
                     刪除
                   </button>
@@ -107,8 +109,8 @@
               <div class="modal-body row">
                 <!-- images -->
                 <div class="col-md-4">
-                  <label for="imgUrl" class="form-label">主要圖片</label
-                  ><input
+                  <label for="imgUrl" class="form-label">主要圖片</label>
+                  <input
                     type="text"
                     name="imgUrl"
                     id="imgUrl"
