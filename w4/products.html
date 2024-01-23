@@ -14,9 +14,18 @@
   <body>
     <div id="app">
       <div class="container">
+        <!-- create new product -->
         <div class="mt-4 text-end">
-          <div type="button" class="btn btn-primary">建立新的產品</div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createModal"
+          >
+            建立新的產品
+          </button>
         </div>
+        <!-- products list -->
         <table class="table mt-4">
           <thead>
             <tr class="text-center">
@@ -30,15 +39,32 @@
           </thead>
           <tbody>
             <tr>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
+              <th>測試</th>
+              <th>測試</th>
+              <th class="text-end">123</th>
+              <th class="text-end">123</th>
+              <th class="text-center">
+                <span class="text-success">啟用</span>
+                <span class="text-secondary">未啟用</span>
+              </th>
+              <th class="text-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-outline-primary btn-sm">
+                    編輯</button
+                  ><button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal"
+                  >
+                    刪除
+                  </button>
+                </div>
+              </th>
             </tr>
           </tbody>
         </table>
+        <!-- pagination -->
         <nav aria-label="Page navigation example">
           <ul class="pagination">
             <li class="page-item disabled">
@@ -56,6 +82,165 @@
             </li>
           </ul>
         </nav>
+        <!-- create / edit modal -->
+        <div
+          class="modal fade"
+          id="createModal"
+          tabindex="-1"
+          aria-labelledby="createModal"
+          aria-hidden="true"
+          data-bs-backdrop="static"
+        >
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">
+                  <span>新增產品</span><span>編輯產品</span>
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body row">
+                <!-- images -->
+                <div class="col-md-4">
+                  <label for="imgUrl" class="form-label">主要圖片</label
+                  ><input
+                    type="text"
+                    name="imgUrl"
+                    id="imgUrl"
+                    class="form-control mb-4"
+                    placeholder="請輸入圖片連結"
+                  />
+                  <!-- more images -->
+                  <button type="button" class="btn btn-outline-primary w-100">
+                    新增圖片
+                  </button>
+                </div>
+                <!-- information -->
+                <div class="col-md-8">
+                  <label for="title" class="form-label">標題</label
+                  ><input
+                    type="text"
+                    class="form-control mb-3"
+                    id="title"
+                    placeholder="請輸入標題"
+                  />
+                  <div class="row mb-3">
+                    <div class="col-6">
+                      <label for="category" class="form-label">分類</label
+                      ><input
+                        type="text"
+                        class="form-control"
+                        id="category"
+                        placeholder="請輸入分類"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <label for="unit" class="form-label">單位</label
+                      ><input
+                        type="text"
+                        class="form-control"
+                        id="unit"
+                        placeholder="請輸入單位"
+                      />
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-6">
+                      <label for="origin_price" class="form-label">原價</label
+                      ><input
+                        type="text"
+                        class="form-control"
+                        id="origin_price"
+                        placeholder="請輸入原價"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <label for="price" class="form-label">售價</label
+                      ><input
+                        type="text"
+                        class="form-control"
+                        id="price"
+                        placeholder="請輸入售價"
+                      />
+                    </div>
+                  </div>
+                  <hr />
+                  <label for="description" class="form-label">產品描述</label>
+                  <textarea
+                    name="description"
+                    id="description"
+                    class="form-control mb-3"
+                    placeholder="請輸入產品描述"
+                  ></textarea>
+                  <label for="content" class="form-label">說明內容</label>
+                  <textarea
+                    name="content"
+                    id="content"
+                    class="form-control mb-3"
+                    placeholder="請輸入說明內容"
+                  ></textarea>
+                  <input
+                    type="checkbox"
+                    name="is_enabled"
+                    id="is_enabled"
+                    class="form-check-input me-1"
+                  /><label for="is_enabled" class="form-label">是否啟用</label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  取消
+                </button>
+                <button type="button" class="btn btn-primary">確認</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- delete modal -->
+        <div
+          class="modal fade"
+          id="deleteModal"
+          tabindex="-1"
+          aria-labelledby="deleteModal"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">刪除產品</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                是否刪除<span class="text-danger">貓貓</span
+                >商品(刪除後將無法恢復)。
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  取消
+                </button>
+                <button type="button" class="btn btn-danger">確認刪除</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
