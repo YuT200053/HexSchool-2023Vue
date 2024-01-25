@@ -69,16 +69,44 @@
         <!-- pagination -->
         <nav aria-label="Page navigation example">
           <ul class="pagination">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" aria-label="Previous">
+            <!-- 當目前在第一頁則不能使用 -->
+            <li
+              class="page-item"
+              :class="{'disabled': pagination.current_page === 1}"
+            >
+              <a
+                class="page-link"
+                href="#"
+                aria-label="Previous"
+                @click.prevent="getData(pagination.current_page - 1)"
+              >
                 <span aria-hidden="true">&laquo;</span>
               </a>
             </li>
-            <li class="page-item active" aria-current="page">
-              <a class="page-link" href="#">1</a>
+            <!-- v-for 渲染總頁數 -->
+            <!-- 目前頁數加上 active class -->
+            <li
+              class="page-item"
+              aria-current="page"
+              v-for="(page, index) in pagination.total_pages"
+              :key="'page' + key"
+              :class="{'active': page === pagination.current_page}"
+            >
+              <a class="page-link" href="#" @click.prevent="getData(page)"
+                >{{ page }}</a
+              >
             </li>
-            <li class="page-item disabled">
-              <a class="page-link" href="#" aria-label="Next">
+            <!-- 當目前頁數等於總頁數則不能使用 -->
+            <li
+              class="page-item"
+              :class="{'disabled': pagination.current_page === pagination.total_pages}"
+            >
+              <a
+                class="page-link"
+                href="#"
+                aria-label="Next"
+                @click.prevent="getData(pagination.current_page + 1)"
+              >
                 <span aria-hidden="true">&raquo;</span>
               </a>
             </li>
