@@ -11,6 +11,7 @@ createApp({
       apiPath: "yu-t-200053",
       // 產品資料存放空間
       products: [],
+      pagination: {},
       tempProduct: {
         imagesUrl: [],
       },
@@ -35,18 +36,23 @@ createApp({
           window.location = "login.html";
         });
     },
-    // 取得產品資料
-    getData() {
-      const url = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
+    // 取得產品資料 / 分頁功能
+    // 帶入 page 參數，預設為 1
+    getData(page = 1) {
+      // const url = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
+      // ? 是網址參數寫法，帶入 page 參數顯示該頁產品資料
+      const url = `${this.apiUrl}/api/${this.apiPath}/admin/products?page=${page}`;
 
       axios
         .get(url)
         .then((res) => {
           this.products = res.data.products;
-          console.log(this.products);
+          this.pagination = res.data.pagination;
+          console.log(this.products, this.pagination);
         })
         .catch((err) => {
           alert(err.response.data.message);
+          window.location = "login.html";
         });
     },
     // 判斷開啟哪個 modal
@@ -105,6 +111,7 @@ createApp({
           alert(err.response.data.message);
         });
     },
+    // 分頁功能
   },
   mounted() {
     // 取出存在 cookie 中的 token 資料
