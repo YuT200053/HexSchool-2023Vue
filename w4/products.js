@@ -3,7 +3,7 @@ import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.11/vue
 let productModal = null;
 let deleteModal = null;
 
-createApp({
+const app = createApp({
   data() {
     return {
       // 登入驗證的資料
@@ -74,6 +74,31 @@ createApp({
         deleteModal.show();
       }
     },
+  },
+  mounted() {
+    // 取出存在 cookie 中的 token 資料
+    const token = document.cookie.replace(
+      /(?:(?:^|.*;\s*)yu-t-200053\s*\=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+    // 驗證成功後不用每次都重複驗證
+    axios.defaults.headers.common.Authorization = token;
+    // 確認是否是管理員
+    this.checkAdmin();
+  },
+});
+
+// deleteModal 元件
+app.component("delProductModal", {
+  template: "#delProductModal",
+  props: ["tempProduct"],
+  data() {
+    return {
+      apiUrl: "https://vue3-course-api.hexschool.io/v2",
+      apiPath: "yu-t-200053",
+    };
+  },
+  methods: {
     // 刪除產品
     deleteProduct() {
       const url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`;
@@ -83,12 +108,32 @@ createApp({
         .then((res) => {
           alert(res.data.message);
           deleteModal.hide();
-          this.getData();
+          // 要用 emit 觸發
+          this.$emit("getData");
         })
         .catch((err) => {
           alert(err.response.data.message);
         });
     },
+  },
+  mounted() {
+    deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"), {
+      keyboard: false,
+    });
+  },
+});
+
+// create / edit modal 元件
+app.component("productModal", {
+  template: "#productModal",
+  props: ["tempProduct", "isNew"],
+  data() {
+    return {
+      apiUrl: "https://vue3-course-api.hexschool.io/v2",
+      apiPath: "yu-t-200053",
+    };
+  },
+  methods: {
     // 新增 / 編輯產品
     updateProduct() {
       // 預設微新增產品
@@ -105,30 +150,29 @@ createApp({
         .then((res) => {
           alert(res.data.message);
           productModal.hide();
-          this.getData();
+          this.$emit("getData");
         })
         .catch((err) => {
           alert(err.response.data.message);
         });
     },
-    // 分頁功能
   },
   mounted() {
-    // 取出存在 cookie 中的 token 資料
-    const token = document.cookie.replace(
-      /(?:(?:^|.*;\s*)yu-t-200053\s*\=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-    // 驗證成功後不用每次都重複驗證
-    axios.defaults.headers.common.Authorization = token;
-    // 確認是否是管理員
-    this.checkAdmin();
-
     productModal = new bootstrap.Modal(document.getElementById("createModal"), {
       keyboard: false,
     });
-    deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"), {
-      keyboard: false,
-    });
   },
-}).mount("#app");
+});
+
+// pagination 元件
+app.component("pagination", {
+  template: "#pagination",
+  props: ["pages"],
+  methods: {
+    changePage(page) {
+      this.$emit("change-page", page);
+    },
+  },
+});
+
+app.mount("#app");

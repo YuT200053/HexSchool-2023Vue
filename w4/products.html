@@ -66,54 +66,74 @@
             </tr>
           </tbody>
         </table>
-        <!-- pagination -->
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <!-- 當目前在第一頁則不能使用 -->
-            <li
-              class="page-item"
-              :class="{'disabled': pagination.current_page === 1}"
-            >
-              <a
-                class="page-link"
-                href="#"
-                aria-label="Previous"
-                @click.prevent="getData(pagination.current_page - 1)"
-              >
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <!-- v-for 渲染總頁數 -->
-            <!-- 目前頁數加上 active class -->
-            <li
-              class="page-item"
-              aria-current="page"
-              v-for="(page, index) in pagination.total_pages"
-              :key="'page' + key"
-              :class="{'active': page === pagination.current_page}"
-            >
-              <a class="page-link" href="#" @click.prevent="getData(page)"
-                >{{ page }}</a
-              >
-            </li>
-            <!-- 當目前頁數等於總頁數則不能使用 -->
-            <li
-              class="page-item"
-              :class="{'disabled': pagination.current_page === pagination.total_pages}"
-            >
-              <a
-                class="page-link"
-                href="#"
-                aria-label="Next"
-                @click.prevent="getData(pagination.current_page + 1)"
-              >
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <!-- create / edit modal -->
+
+        <!-- delete modal 元件 -->
+        <!-- 要記得不能要小駝峰，要使用「-」 -->
+        <del-product-modal
+          ref="delProduct"
+          :temp-product="tempProduct"
+          @get-data="getData"
+        ></del-product-modal>
+        <!-- create / edit modal 元件 -->
+        <product-modal
+          ref="product"
+          :temp-product="tempProduct"
+          :is-new="isNew"
+          @get-data="getData"
+        ></product-modal>
+        <!-- pagination 元件 -->
+        <pagination :pages="pagination" @change-page="getData"></pagination>
+      </div>
+    </div>
+
+    <!-- delete modal 元件樣板 -->
+    <script type="text/x-template" id="delProductModal">
         <div
+        class="modal fade"
+        id="deleteModal"
+        tabindex="-1"
+        aria-labelledby="deleteModal"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+              <h5 class="modal-title">刪除產品</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              是否刪除
+              <strong class="text-danger"> {{ tempProduct.title }} </strong>
+              商品(刪除後將無法恢復)。
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-bs-dismiss="modal"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                @click.prevent="deleteProduct"
+              >
+                確認刪除
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+    <!-- create / edit modal 元件樣板 -->
+    <script type="text/x-template" id="productModal">
+      <div
           class="modal fade"
           id="createModal"
           tabindex="-1"
@@ -290,51 +310,58 @@
             </div>
           </div>
         </div>
-        <!-- delete modal -->
-        <div
-          class="modal fade"
-          id="deleteModal"
-          tabindex="-1"
-          aria-labelledby="deleteModal"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">刪除產品</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                是否刪除
-                <strong class="text-danger"> {{ tempProduct.title }} </strong>
-                商品(刪除後將無法恢復)。
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  取消
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  @click.prevent="deleteProduct"
-                >
-                  確認刪除
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </script>
+
+    <!-- pagination 元件樣板 -->
+    <!-- methods 名稱記得也要改 -->
+    <script type="text/x-template" id="pagination">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <!-- 當目前在第一頁則不能使用 -->
+          <li
+            class="page-item"
+            :class="{'disabled': pages.current_page === 1}"
+          >
+          <!-- 當點擊時觸發元件 changePage methods，使用 emit 由內向外傳頁數並取得該頁資料 -->
+            <a
+              class="page-link"
+              href="#"
+              aria-label="Previous"
+              @click.prevent="changePage(pages.current_page - 1)"
+            >
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <!-- v-for 渲染總頁數 -->
+          <!-- 目前頁數加上 active class -->
+          <li
+            class="page-item"
+            aria-current="page"
+            v-for="(page, index) in pages.total_pages"
+            :key="'page' + key"
+            :class="{'active': page === pages.current_page}"
+          >
+            <a class="page-link" href="#" @click.prevent="changePage(page)"
+              >{{ page }}</a
+            >
+          </li>
+          <!-- 當目前頁數等於總頁數則不能使用 -->
+          <li
+            class="page-item"
+            :class="{'disabled': pages.current_page === pages.total_pages}"
+          >
+            <a
+              class="page-link"
+              href="#"
+              aria-label="Next"
+              @click.prevent="changePage(pages.current_page + 1)"
+            >
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script
