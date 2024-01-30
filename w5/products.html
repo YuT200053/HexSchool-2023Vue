@@ -43,7 +43,12 @@
               </th>
               <th>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-outline-secondary">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#productModal"
+                  >
                     <i class="fas fa-spinner fa-pulse"></i>
                     查看更多
                   </button>
@@ -154,6 +159,54 @@
               <button type="submit" class="btn btn-danger">送出訂單</button>
             </div>
           </form>
+        </div>
+        <!-- product modal -->
+        <div
+          class="modal fade"
+          id="productModal"
+          tabindex="-1"
+          aria-labelledby="productModal"
+          aria-hidden="true"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+        >
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">檸檬蜂蜜蛋糕</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body row">
+                <div class="col-6">pic</div>
+                <div class="col-6">
+                  <div class="badge rounded-pill bg-primary">蛋糕</div>
+                  <p>商品描述：尺寸：6寸</p>
+                  <p>
+                    商品內容：蜜蜂蜜蛋糕，夾層夾上酸酸甜甜的檸檬餡，清爽可口的滋味讓人口水直流！
+                  </p>
+                  <del class="h6">原價 1000 元</del>
+                  <div class="h5">現在只要 900 元</div>
+                  <div class="input-group mt-3">
+                    <input
+                      type="number"
+                      name="quantity"
+                      id="quantity"
+                      class="form-control"
+                      value="1"
+                    />
+                    <button type="button" class="btn btn-primary">
+                      加入購物車
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
