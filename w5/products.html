@@ -110,43 +110,84 @@
         </table>
         <!-- 收件者資料 -->
         <div class="row">
-          <form class="my-4 col-lg-6 mx-auto">
+          <v-form
+            v-slot="{ errors }"
+            @submit="onSubmit"
+            class="my-4 col-lg-6 mx-auto"
+          >
+            <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
-              <input
+              <v-field
+                id="email"
+                name="email"
                 type="email"
                 class="form-control"
-                id="email"
+                :class="{ 'is-invalid': errors['email'] }"
                 placeholder="請輸入 Email"
-              />
+                rules="email|required"
+                v-model="user.email"
+              ></v-field>
+              <error-message
+                name="email"
+                class="invalid-feedback"
+              ></error-message>
             </div>
+            <!-- name -->
             <div class="mb-3">
               <label for="name" class="form-label">收件人姓名</label>
-              <input
+              <v-field
+                id="name"
+                name="name"
                 type="text"
                 class="form-control"
-                id="name"
+                :class="{ 'is-invalid': errors['name'] }"
                 placeholder="請輸入姓名"
-              />
+                rules="required"
+                v-model="user.name"
+              ></v-field>
+              <error-message
+                name="name"
+                class="invalid-feedback"
+              ></error-message>
             </div>
+            <!-- tel -->
             <div class="mb-3">
               <label for="tel" class="form-label">收件人電話</label>
-              <input
+              <v-field
+                id="tel"
+                name="tel"
                 type="tel"
                 class="form-control"
-                id="tel"
-                placeholder="請輸入電話"
-              />
+                :class="{ 'is-invalid': errors['tel'] }"
+                placeholder="請輸入姓名"
+                rules="required"
+                v-model="user.tel"
+              ></v-field>
+              <error-message
+                name="tel"
+                class="invalid-feedback"
+              ></error-message>
             </div>
+            <!-- address -->
             <div class="mb-3">
               <label for="address" class="form-label">收件人地址</label>
-              <input
+              <v-field
+                id="address"
+                name="address"
                 type="text"
                 class="form-control"
-                id="address"
+                :class="{ 'is-invalid': errors['address'] }"
                 placeholder="請輸入地址"
-              />
+                rules="required"
+                v-model="user.address"
+              ></v-field>
+              <error-message
+                name="address"
+                class="invalid-feedback"
+              ></error-message>
             </div>
+            <!-- notice -->
             <div class="mb-3">
               <label for="message" class="form-label">留言</label
               ><textarea
@@ -155,10 +196,17 @@
                 id="message"
               ></textarea>
             </div>
+            <!-- submit -->
             <div class="text-end">
-              <button type="submit" class="btn btn-danger">送出訂單</button>
+              <button
+                type="submit"
+                class="btn btn-danger"
+                @submit.prevent="onSubmit()"
+              >
+                送出訂單
+              </button>
             </div>
-          </form>
+          </v-form>
         </div>
         <!-- product modal -->
         <div
@@ -225,6 +273,6 @@
     <script src="https://unpkg.com/@vee-validate/i18n@4.1.0"></script>
     <script src="https://unpkg.com/@vee-validate/rules"></script>
     <!-- customized -->
-    <script src="./index.js" type="module"></script>
+    <script src="./products.js" type="module"></script>
   </body>
 </html>
