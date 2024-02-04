@@ -161,7 +161,7 @@
                 class="form-control"
                 :class="{ 'is-invalid': errors['tel'] }"
                 placeholder="請輸入姓名"
-                rules="required"
+                rules="required|min:8"
                 v-model="user.tel"
               ></v-field>
               <error-message
