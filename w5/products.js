@@ -57,6 +57,10 @@ const app = Vue.createApp({
       this.tempProduct = product;
       userModal.show();
     },
+    // 加入購物車
+    addCart(product) {
+      console.log(product);
+    },
   },
   mounted() {
     this.getProducts();
@@ -66,10 +70,10 @@ const app = Vue.createApp({
     // this.userModal = new bootstrap.Modal(this.$refs.modal);
     // this.userModal.show();
   },
-  components: {
-    productModal,
-  },
 });
+
+// product modal
+app.component('productModal', productModal);
 
 // VeeValidation 元件
 app.component('VForm', VeeValidate.Form);
