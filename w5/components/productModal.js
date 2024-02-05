@@ -10,7 +10,6 @@ export default {
   mounted() {
     this.modal = new bootstrap.Modal(this.$refs.modal, {
       keyboard: false,
-      backdrop: 'static',
     });
   },
   methods: {
@@ -28,7 +27,7 @@ export default {
       this.qty = 1;
     },
   },
-  template: `<!-- 要記得加 ref -->
+  template: `
   <div
     class="modal fade"
     id="productModal"
@@ -44,10 +43,8 @@ export default {
         <div class="modal-header bg-dark text-white">
           <h5 class="modal-title" id="exampleModalLabel">{{ tempProduct.title }}</h5>
           <button
-            type="button"
-            class="btn-close"
+          type="button" class="btn-close btn-close-white" aria-label="Close"
             data-bs-dismiss="modal"
-            aria-label="Close"
           ></button>
         </div>
         <div class="modal-body row">

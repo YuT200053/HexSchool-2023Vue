@@ -59,7 +59,7 @@ const app = Vue.createApp({
     // 取得單一產品查看更多
     openModal(product) {
       this.tempProduct = product;
-      userModal.show();
+      this.$refs.userProductModal.openModal();
     },
     // 加入購物車，記得看 api 文件
     addCart(product_id, qty = 1) {
@@ -70,6 +70,7 @@ const app = Vue.createApp({
 
       // 加入 loading 效果，點擊按鈕時將 id 帶入 status
       this.status.addCartLoading = product_id;
+      this.$refs.userProductModal.hideModal();
 
       axios
         .post(`${apiUrl}/api/${apiPath}/cart`, { data: order })
