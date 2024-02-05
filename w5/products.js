@@ -40,8 +40,10 @@ const app = Vue.createApp({
       // loading 狀態
       status: {
         addCartLoading: '',
-        productDetail: '',
+        changeCartQty: '',
       },
+      // 購物車資料
+      carts: {},
     };
   },
   methods: {
@@ -76,11 +78,55 @@ const app = Vue.createApp({
           // 加入購物車後，清除狀態的 id
           this.status.addCartLoading = '';
           userModal.hide();
+          this.getCart();
         });
+    },
+    // 取得購物車列表
+    getCart() {
+      axios.get(`${apiUrl}/api/${apiPath}/cart`).then((res) => {
+        console.log(res.data.data);
+        this.carts = res.data.data;
+      });
+    },
+    // 更改購物車品項數量
+    changeCartQty(cart, qty) {
+      const order = {
+        product_id: cart.product_id,
+        qty,
+      };
+
+      this.status.changeCartQty = cart.id;
+
+      // 這邊要帶入的是購物車 id
+      axios
+        .put(`${apiUrl}/api/${apiPath}/cart/${cart.id}`, { data: order })
+        .then((res) => {
+          console.log(res.data);
+          this.getCart();
+          this.status.changeCartQty = '';
+        });
+    },
+    // 刪除購物車特定品項
+    deleteCartItem(id) {
+      this.status.changeCartQty = id;
+
+      axios.delete(`${apiUrl}/api/${apiPath}/cart/${id}`).then((res) => {
+        alert(res.data.message);
+        this.getCart();
+        this.status.changeCartQty = '';
+      });
+    },
+    // 刪除購物車全部品項
+    deleteCartAll() {
+      axios.delete(`${apiUrl}/api/${apiPath}/carts`).then((res) => {
+        alert(res.data.message);
+        this.getCart();
+      });
     },
   },
   mounted() {
     this.getProducts();
+    this.getCart();
     userModal = new bootstrap.Modal(document.getElementById('productModal'), {
       keyboard: false,
     });
