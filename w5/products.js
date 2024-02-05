@@ -31,7 +31,7 @@ const app = Vue.createApp({
         name: '',
         tel: '',
         address: '',
-        notice: '',
+        message: '',
       },
       // 存放產品列表
       products: [],
