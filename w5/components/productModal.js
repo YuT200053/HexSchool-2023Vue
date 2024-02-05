@@ -2,9 +2,10 @@ export default {
   data() {
     return {
       productModal: '',
+      qty: 1,
     };
   },
-  props: ['tempProduct'],
+  props: ['tempProduct', 'addCartLoading'],
   eimts: ['addCart'],
   mounted() {
     this.modal = new bootstrap.Modal(this.$refs.modal, {
@@ -18,6 +19,13 @@ export default {
     },
     hideModal() {
       this.modal.hide();
+    },
+  },
+  // 用來監聽當外面的值產生變化
+  watch: {
+    // 當選擇不同商品(tempProduct 值變動時)，qty 變為 1。
+    tempProduct() {
+      this.qty = 1;
     },
   },
   template: `<!-- 要記得加 ref -->
@@ -58,10 +66,11 @@ export default {
               <div class="h5">現在只要 {{ tempProduct.price }} 元</div>
             </div>
             <div class="input-group mt-3">
-            <select name="qty" id="qty" class="form-select">
-              <option :value="i" v-for="i in 20" :key="i">{{ i }}</option>
-          </select> 
-              <button type="button" class="btn btn-primary" @click.prevent="$emit('add-cart', tempProduct.id)">
+            <select class="form-select" v-model="qty">
+              <option v-for="i in 20" :value="i" :key="i">{{ i }}</option>
+            </select>
+              <button type="button" class="btn btn-primary" @click.prevent="$emit('add-cart', tempProduct.id, qty)">
+              <i class="fas fa-spinner fa-pulse" v-if="addCartLoading === tempProduct.id"></i>
                 加入購物車
               </button>
             </div>

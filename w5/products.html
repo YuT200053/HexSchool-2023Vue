@@ -68,8 +68,17 @@
                     <i class="fas fa-spinner fa-pulse"></i>
                     查看更多
                   </button>
-                  <button type="button" class="btn btn-outline-danger">
-                    <i class="fas fa-spinner fa-pulse"></i>
+                  <!-- 如果點擊的產品與 addCartLoading 的 id 一樣，則不能再次點擊按鈕，並顯示 loading -->
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    @click.prevent="addCart(product.id)"
+                    :disabled="status.addCartLoading === product.id"
+                  >
+                    <i
+                      class="fas fa-spinner fa-pulse"
+                      v-if="status.addCartLoading === product.id"
+                    ></i>
                     加到購物車
                   </button>
                 </div>
@@ -227,6 +236,7 @@
         <!-- product modal -->
         <product-modal
           :temp-product="tempProduct"
+          :add-cart-loading="status.addCartLoading"
           @add-cart="addCart"
         ></product-modal>
       </div>

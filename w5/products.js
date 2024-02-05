@@ -37,8 +37,11 @@ const app = Vue.createApp({
       products: [],
       // 查看更多時暫存資料
       tempProduct: {},
-      // modal
-      //   userModal: null,
+      // loading 狀態
+      status: {
+        addCartLoading: '',
+        productDetail: '',
+      },
     };
   },
   methods: {
@@ -49,7 +52,6 @@ const app = Vue.createApp({
     getProducts() {
       axios.get(`${apiUrl}/api/${apiPath}/products/all`).then((res) => {
         this.products = res.data.products;
-        // console.log(this.products);
       });
     },
     // 取得單一產品查看更多
@@ -57,9 +59,24 @@ const app = Vue.createApp({
       this.tempProduct = product;
       userModal.show();
     },
-    // 加入購物車
-    addCart(product) {
-      console.log(product);
+    // 加入購物車，記得看 api 文件
+    addCart(product_id, qty = 1) {
+      const order = {
+        product_id,
+        qty,
+      };
+
+      // 加入 loading 效果，點擊按鈕時將 id 帶入 status
+      this.status.addCartLoading = product_id;
+
+      axios
+        .post(`${apiUrl}/api/${apiPath}/cart`, { data: order })
+        .then((res) => {
+          console.log(res);
+          // 加入購物車後，清除狀態的 id
+          this.status.addCartLoading = '';
+          userModal.hide();
+        });
     },
   },
   mounted() {
