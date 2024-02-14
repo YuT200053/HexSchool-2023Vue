@@ -26,11 +26,13 @@ const app = Vue.createApp({
   data() {
     return {
       // 存放收件者資料
-      user: {
-        email: '',
-        name: '',
-        tel: '',
-        address: '',
+      form: {
+        user: {
+          name: '',
+          email: '',
+          tel: '',
+          address: '',
+        },
         message: '',
       },
       // 存放產品列表
@@ -47,9 +49,6 @@ const app = Vue.createApp({
     };
   },
   methods: {
-    onSubmit() {
-      console.log(this.user);
-    },
     // 取得產品列表
     getProducts() {
       axios.get(`${apiUrl}/api/${apiPath}/products/all`).then((res) => {
@@ -75,6 +74,7 @@ const app = Vue.createApp({
       axios
         .post(`${apiUrl}/api/${apiPath}/cart`, { data: order })
         .then((res) => {
+          alert(res.data.message);
           console.log(res);
           // 加入購物車後，清除狀態的 id
           this.status.addCartLoading = '';
@@ -102,6 +102,7 @@ const app = Vue.createApp({
       axios
         .put(`${apiUrl}/api/${apiPath}/cart/${cart.id}`, { data: order })
         .then((res) => {
+          alert(res.data.message);
           console.log(res.data);
           this.getCart();
           this.status.changeCartQty = '';
@@ -123,6 +124,22 @@ const app = Vue.createApp({
         alert(res.data.message);
         this.getCart();
       });
+    },
+    // 送出表單
+    createOrder() {
+      const url = `${apiUrl}/api/${apiPath}/order`;
+      const order = this.form;
+      axios
+        .post(url, { data: order })
+        .then((res) => {
+          alert(res.data.message);
+          // 清空表單
+          this.$refs.form.resetForm();
+          this.getCart();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     },
   },
   mounted() {

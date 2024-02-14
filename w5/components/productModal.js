@@ -44,7 +44,7 @@ export default {
           <h5 class="modal-title" id="exampleModalLabel">{{ tempProduct.title }}</h5>
           <button
           type="button" class="btn-close btn-close-white" aria-label="Close"
-            data-bs-dismiss="modal"
+            data-bs-dismiss="modal" @click="hideModal"
           ></button>
         </div>
         <div class="modal-body row">
