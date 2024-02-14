@@ -87,10 +87,12 @@
         </table>
         <!-- 購物車列表 -->
         <div class="text-end mt-4">
+          <!-- 當購物車為空時，無法清空購物車 -->
           <button
             type="button"
             class="btn btn-outline-danger"
             @click.prevent="deleteCartAll()"
+            :disabled="carts.total === 0"
           >
             清空購物車
           </button>
@@ -113,7 +115,11 @@
                   @click.prevent="deleteCartItem(cart.id)"
                   :disabled="cart.id === status.changeCartQty"
                 >
-                  ×
+                  <i
+                    class="fas fa-spinner fa-pulse"
+                    v-if="cart.id === status.changeCartQty"
+                  ></i>
+                  <span v-else>×</span>
                 </button>
               </th>
               <th>{{ cart.product.title }}</th>
@@ -148,9 +154,11 @@
         </table>
         <!-- 收件者資料 -->
         <div class="row">
+          <!-- 按下送出訂單後驗證表單並創建訂單 -->
           <v-form
+            ref="form"
             v-slot="{ errors }"
-            @submit="onSubmit"
+            @submit="createOrder"
             class="my-4 col-lg-6 mx-auto"
           >
             <!-- Email -->
@@ -164,7 +172,7 @@
                 :class="{ 'is-invalid': errors['email'] }"
                 placeholder="請輸入 Email"
                 rules="email|required"
-                v-model="user.email"
+                v-model="form.user.email"
               ></v-field>
               <error-message
                 name="email"
@@ -182,7 +190,7 @@
                 :class="{ 'is-invalid': errors['name'] }"
                 placeholder="請輸入姓名"
                 rules="required"
-                v-model="user.name"
+                v-model="form.user.name"
               ></v-field>
               <error-message
                 name="name"
@@ -200,7 +208,7 @@
                 :class="{ 'is-invalid': errors['tel'] }"
                 placeholder="請輸入姓名"
                 rules="required|min:8"
-                v-model="user.tel"
+                v-model="form.user.tel"
               ></v-field>
               <error-message
                 name="tel"
@@ -218,7 +226,7 @@
                 :class="{ 'is-invalid': errors['address'] }"
                 placeholder="請輸入地址"
                 rules="required"
-                v-model="user.address"
+                v-model="form.user.address"
               ></v-field>
               <error-message
                 name="address"
@@ -232,14 +240,16 @@
                 class="form-control"
                 name="message"
                 id="message"
+                v-model="form.message"
               ></textarea>
             </div>
             <!-- submit -->
+            <!-- 當購物車為空時，不能送出表單 -->
             <div class="text-end">
               <button
                 type="submit"
                 class="btn btn-danger"
-                @submit.prevent="onSubmit()"
+                :disabled="carts.total === 0"
               >
                 送出訂單
               </button>
