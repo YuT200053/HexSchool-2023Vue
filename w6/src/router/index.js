@@ -4,18 +4,42 @@ import HomeView from '../views/HomeView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // 前台路由
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      component: () => import('../views/FrontView.vue'),
+      // 巢狀路由：子路由不用加斜線
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: () => import('../views/HomeView.vue')
+        },
+        {
+          path: 'products',
+          component: () => import('../views/ProductsView.vue')
+        },
+        {
+          path: 'cart',
+          component: () => import('../views/CartView.vue')
+        }
+      ]
     },
+    // 後台路由
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      path: '/admin',
+      component: () => import('../views/dashboard/DashboardView.vue'),
+      // 巢狀路由：子路由不用加斜線
+      children: [
+        {
+          path: 'products',
+          component: () => import('../views/dashboard/ProductsView.vue')
+        },
+        {
+          path: 'order',
+          component: () => import('../views/dashboard/OrderView.vue')
+        }
+      ]
     }
   ]
 })

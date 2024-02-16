@@ -1,7 +1,7 @@
-import './assets/main.css'
-
+// 外部套件放最前面
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import 'bootstrap/scss/bootstrap.scss'
 
 import App from './App.vue'
 import router from './router'
