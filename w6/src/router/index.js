@@ -40,6 +40,11 @@ const router = createRouter({
           component: () => import('../views/dashboard/OrderView.vue')
         }
       ]
+    },
+    // 登入路由
+    {
+      path: '/login',
+      component: () => import('../views/LoginView.vue')
     }
   ]
 })
