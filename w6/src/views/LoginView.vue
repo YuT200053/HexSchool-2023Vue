@@ -38,6 +38,9 @@
 // 載入 axios
 import axios from 'axios';
 
+// 載入環境變數
+const { VITE_URL } = import.meta.env;
+
 export default {
   data() {
     return {
@@ -50,14 +53,22 @@ export default {
   },
   methods: {
     login() {
-      const apiUrl = 'https://vue3-course-api.hexschool.io/v2/admin/signin';
+      const api = `${VITE_URL}/admin/signin`;
+      axios
+        .post(api, this.user)
+        .then((res) => {
+          // 取得 token 和到期日
+          const { token, expired } = res.data;
+          // 設定 cookie，在後台產品列表做驗證
+          document.cookie = `yu-t-200053=${token};expires=${new Date(expired)};`;
+          alert(res.data.message);
 
-      axios.post(apiUrl, this.user).then((res) => {
-        // 取得 token 和到期日
-        const { token, expired } = res.data;
-        // 設定 cookie，在後台產品列表做驗證
-        document.cookie = `yu-t-200053=${token};expires=${new Date(expired)};`;
-      });
+          // 用 router 的方法來切換頁面
+          this.$router.push('/admin/products');
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     }
   }
 };
