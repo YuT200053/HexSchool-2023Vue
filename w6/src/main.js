@@ -1,14 +1,15 @@
 // 外部套件放最前面
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import 'bootstrap/scss/bootstrap.scss'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+// 需客製變數，bootstrap 由 all.scss 導入
+import './assets/all.scss';
 
-import App from './App.vue'
-import router from './router'
+import App from './App.vue';
+import router from './router';
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
+app.use(createPinia());
+app.use(router);
 
-app.mount('#app')
+app.mount('#app');

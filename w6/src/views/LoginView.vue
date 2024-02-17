@@ -27,7 +27,7 @@
             />
             <label for="password">Password</label>
           </div>
-          <button type="submit" class="btn btn-primary btn-lg w-100">登入</button>
+          <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">登入</button>
         </form>
       </div>
     </div>
