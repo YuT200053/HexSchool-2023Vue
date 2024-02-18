@@ -32,7 +32,10 @@
               >
                 查看更多
               </button>
-              <button type="button" class="btn btn-outline-danger">加到購物車</button>
+              <button type="button" class="btn btn-outline-danger">
+                <i class="fas fa-spinner fa-pulse"></i>
+                加到購物車
+              </button>
             </div>
           </td>
         </tr>
