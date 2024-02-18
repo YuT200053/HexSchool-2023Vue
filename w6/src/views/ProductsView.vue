@@ -1,13 +1,14 @@
 <template>
   <div>
+    <VueLoading :active="isLoading" />
     <h2 class="pb-3 text-center">產品列表</h2>
     <table class="table align-middle">
       <thead>
         <tr>
           <td width="20%">圖片</td>
-          <td width="20%">商品名稱</td>
-          <td>價格</td>
-          <td></td>
+          <td width="30%">商品名稱</td>
+          <td width="20%">價格</td>
+          <td width="20%"></td>
         </tr>
       </thead>
       <tbody>
@@ -29,6 +30,7 @@
                 type="button"
                 class="btn btn-outline-secondary"
                 @click.prevent="openModal(product)"
+                :disabled="loadingStatus.loadingItem === product.id"
               >
                 查看更多
               </button>
@@ -36,6 +38,7 @@
                 type="button"
                 class="btn btn-outline-danger"
                 @click.prevent="addCart(product.id)"
+                :disabled="loadingStatus.loadingItem === product.id"
               >
                 加到購物車
               </button>
@@ -46,7 +49,12 @@
     </table>
     <!-- modal -->
     <!-- emit 也要記得加 -->
-    <ProductModal :temp-product="tempProduct" ref="productModal" @add-cart="addCart"></ProductModal>
+    <ProductModal
+      :temp-product="tempProduct"
+      :loading-status="loadingStatus"
+      ref="productModal"
+      @add-cart="addCart"
+    ></ProductModal>
   </div>
 </template>
 
@@ -73,18 +81,24 @@ export default {
       productModal: '',
       // 暫存單一商品資料
       tempProduct: {},
-      carts: {}
+      carts: {},
+      // loading 狀態
+      isLoading: false,
+      loadingStatus: {
+        loadingItem: ''
+      }
     };
   },
   methods: {
     getProducts() {
+      this.isLoading = true;
       const api = `${VITE_URL}/api/${VITE_PATH}/products/all`;
 
       axios
         .get(api)
         .then((res) => {
           this.products = res.data.products;
-          console.log(this.products);
+          this.isLoading = false;
         })
         .catch((err) => {
           alert(err.response.data.message);
@@ -97,14 +111,18 @@ export default {
       this.$refs.productModal.openModal();
     },
     addCart(product_id, qty = 1) {
+      this.isLoading = true;
       const order = { product_id, qty };
       const api = `${VITE_URL}/api/${VITE_PATH}/cart`;
+      this.loadingStatus.loadingItem = product_id;
 
       axios
         .post(api, { data: order })
         .then((res) => {
           alert(res.data.message);
           this.$refs.productModal.hideModal();
+          this.isLoading = false;
+          this.loadingStatus.loadingItem = '';
         })
         .catch((err) => {
           alert(err.response.data.message);

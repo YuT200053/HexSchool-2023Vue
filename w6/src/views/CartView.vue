@@ -1,8 +1,14 @@
 <template>
   <div class="container">
+    <FullLoading :active="isLoading" />
     <h2 class="text-center">前台購物車</h2>
     <div class="text-end my-3">
-      <button type="button" class="btn btn-outline-danger" @click.prevent="deleteAll">
+      <button
+        type="button"
+        class="btn btn-outline-danger"
+        @click.prevent="deleteAll"
+        :disabled="loadingStatus.loadingItem === true"
+      >
         清空購物車
       </button>
     </div>
@@ -23,6 +29,7 @@
               type="button"
               class="btn btn-outline-danger"
               @click.prevent="deleteCart(cart.id)"
+              :disabled="loadingStatus.loadingItem === cart.id"
             >
               ×
             </button>
@@ -30,10 +37,15 @@
           <td>{{ cart.product.title }}</td>
           <td>
             <div class="input-group">
-              <select class="form-select" id="cart" v-model="cart.qty">
+              <select
+                class="form-select"
+                id="cart"
+                v-model="cart.qty"
+                :disabled="loadingStatus.loadingItem === cart.id"
+              >
                 <option v-for="i in 20" :key="i" :value="i">{{ i }}</option>
               </select>
-              <label class="input-group-text" for="cart">個</label>
+              <label class="input-group-text" for="cart">{{ cart.product.unit }}</label>
             </div>
           </td>
           <td class="text-end">$ {{ cart.product.price }}</td>
@@ -138,15 +150,20 @@ export default {
           address: ''
         },
         message: ''
+      },
+      isLoading: false,
+      loadingStatus: {
+        loadingItem: ''
       }
     };
   },
   methods: {
     getCart() {
+      this.isLoading = true;
       const api = `${VITE_URL}/api/${VITE_PATH}/cart`;
       axios.get(api).then((res) => {
         this.carts = res.data.data;
-        console.log(this.carts);
+        this.isLoading = false;
       });
     },
     Submit() {
@@ -154,12 +171,14 @@ export default {
     },
     deleteCart(id) {
       const api = `${VITE_URL}/api/${VITE_PATH}/cart/${id}`;
+      this.loadingStatus.loadingItem = id;
 
       axios
         .delete(api)
         .then((res) => {
           alert(res.data.message);
           this.getCart();
+          this.loadingStatus.loadingItem = '';
         })
         .catch((err) => {
           alert(err.response.data.message);
@@ -167,12 +186,14 @@ export default {
     },
     deleteAll() {
       const api = `${VITE_URL}/api/${VITE_PATH}/carts`;
+      this.loadingStatus.loadingItem = true;
 
       axios
         .delete(api)
         .then((res) => {
           alert(res.data.message);
           this.getCart();
+          this.loadingStatus.loadingItem = '';
         })
         .catch((err) => {
           alert(err.response.data.message);

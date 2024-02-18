@@ -2,4 +2,6 @@
 // 自定義方法
 @import "./variables";
 // 導入 bootstrap
-@import 'bootstrap/scss/bootstrap.scss'
+@import 'bootstrap/scss/bootstrap.scss';
+// 導入 loading
+@import 'vue-loading-overlay/dist/css/index.css';

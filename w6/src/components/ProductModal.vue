@@ -45,6 +45,7 @@
                   type="button"
                   id="button-addon2"
                   @click="$emit('add-cart', tempProduct.id, qty)"
+                  :disabled="loadingStatus.loadingItem === tempProduct.id"
                 >
                   加入購物車
                 </button>
@@ -63,7 +64,7 @@ import { Modal } from 'bootstrap';
 // import Modal from 'bootstrap/js/dist/modal';
 
 export default {
-  props: ['tempProduct'],
+  props: ['tempProduct', 'loadingStatus'],
   eimts: ['add-cart'],
   data() {
     return {

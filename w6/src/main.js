@@ -7,6 +7,9 @@ import { Field, Form, ErrorMessage, defineRule, configure } from 'vee-validate';
 import * as AllRules from '@vee-validate/rules';
 import { localize, setLocale } from '@vee-validate/i18n';
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
+// 導入 Loading Overlay
+import Loading from 'vue-loading-overlay';
+
 // 需客製變數，bootstrap 由 all.scss 導入
 import './assets/all.scss';
 
@@ -35,5 +38,7 @@ app.use(router);
 app.component('VeeForm', Form);
 app.component('VeeField', Field);
 app.component('ErrorMessage', ErrorMessage);
+// 註冊 loading 元件
+app.component('VueLoading', Loading);
 
 app.mount('#app');
