@@ -9,8 +9,8 @@
       <thead>
         <tr>
           <td width="10%"></td>
-          <td width="45%">品名</td>
-          <td width="25%">數量 / 單位</td>
+          <td width="40%">品名</td>
+          <td width="30%">數量 / 單位</td>
           <td width="30%">單價</td>
         </tr>
       </thead>

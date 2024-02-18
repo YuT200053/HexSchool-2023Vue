@@ -32,8 +32,11 @@
               >
                 查看更多
               </button>
-              <button type="button" class="btn btn-outline-danger">
-                <i class="fas fa-spinner fa-pulse"></i>
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                @click.prevent="addCart(product.id)"
+              >
                 加到購物車
               </button>
             </div>
@@ -42,7 +45,8 @@
       </tbody>
     </table>
     <!-- modal -->
-    <ProductModal :temp-product="tempProduct" ref="productModal"></ProductModal>
+    <!-- emit 也要記得加 -->
+    <ProductModal :temp-product="tempProduct" ref="productModal" @add-cart="addCart"></ProductModal>
   </div>
 </template>
 
@@ -68,7 +72,8 @@ export default {
       // 設定 modal
       productModal: '',
       // 暫存單一商品資料
-      tempProduct: {}
+      tempProduct: {},
+      carts: {}
     };
   },
   methods: {
@@ -90,6 +95,21 @@ export default {
       this.tempProduct = product;
       // this.productModal.show();
       this.$refs.productModal.openModal();
+    },
+    addCart(product_id, qty = 1) {
+      const order = { product_id, qty };
+      const api = `${VITE_URL}/api/${VITE_PATH}/cart`;
+
+      axios
+        .post(api, { data: order })
+        .then((res) => {
+          alert(res.data.message);
+          this.$refs.productModal.hideModal();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+      console.log(order);
     }
   },
   mounted() {

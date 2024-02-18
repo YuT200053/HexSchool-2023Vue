@@ -40,7 +40,12 @@
                 <select class="form-select" id="inputGroupSelect01" v-model="qty">
                   <option v-for="i in 20" :key="i" :value="i">{{ i }}</option>
                 </select>
-                <button class="btn btn-primary fw-bold" type="button" id="button-addon2">
+                <button
+                  class="btn btn-primary fw-bold"
+                  type="button"
+                  id="button-addon2"
+                  @click="$emit('add-cart', tempProduct.id, qty)"
+                >
                   加入購物車
                 </button>
               </div>
@@ -59,6 +64,7 @@ import { Modal } from 'bootstrap';
 
 export default {
   props: ['tempProduct'],
+  eimts: ['add-cart'],
   data() {
     return {
       modal: '',
