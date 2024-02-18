@@ -2,7 +2,9 @@
   <div class="container">
     <h2 class="text-center">前台購物車</h2>
     <div class="text-end my-3">
-      <button type="button" class="btn btn-outline-danger">清空購物車</button>
+      <button type="button" class="btn btn-outline-danger" @click.prevent="deleteAll">
+        清空購物車
+      </button>
     </div>
     <!-- 購物車列表 -->
     <table class="table align-middle">
@@ -17,7 +19,13 @@
       <tbody>
         <tr v-for="cart in carts.carts" :key="cart.id">
           <td>
-            <button type="button" class="btn btn-outline-danger">×</button>
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              @click.prevent="deleteCart(cart.id)"
+            >
+              ×
+            </button>
           </td>
           <td>{{ cart.product.title }}</td>
           <td>
@@ -143,6 +151,32 @@ export default {
     },
     Submit() {
       console.log(this.form);
+    },
+    deleteCart(id) {
+      const api = `${VITE_URL}/api/${VITE_PATH}/cart/${id}`;
+
+      axios
+        .delete(api)
+        .then((res) => {
+          alert(res.data.message);
+          this.getCart();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    deleteAll() {
+      const api = `${VITE_URL}/api/${VITE_PATH}/carts`;
+
+      axios
+        .delete(api)
+        .then((res) => {
+          alert(res.data.message);
+          this.getCart();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     }
   },
   mounted() {
