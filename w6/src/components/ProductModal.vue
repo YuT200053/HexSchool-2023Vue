@@ -37,7 +37,7 @@
                 </span>
               </p>
               <div class="input-group my-3">
-                <select class="form-select" id="inputGroupSelect01">
+                <select class="form-select" id="inputGroupSelect01" v-model="qty">
                   <option v-for="i in 20" :key="i" :value="i">{{ i }}</option>
                 </select>
                 <button class="btn btn-primary fw-bold" type="button" id="button-addon2">
@@ -61,7 +61,8 @@ export default {
   props: ['tempProduct'],
   data() {
     return {
-      modal: ''
+      modal: '',
+      qty: 1
     };
   },
   methods: {
@@ -77,6 +78,12 @@ export default {
       Keyboard: false,
       backdrop: 'static'
     });
+  },
+  // 監聽當外面的直產生變化 qty 變為 1
+  watch: {
+    tempProduct() {
+      this.qty = 1;
+    }
   }
 };
 </script>
