@@ -39,7 +39,7 @@
       </tbody>
     </table>
     <!-- modal -->
-    <div
+    <!-- <div
       class="modal fade"
       id="exampleModal"
       tabindex="-1"
@@ -89,7 +89,8 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
+    <ProductModal :temp-product="tempProduct" ref="productModal"></ProductModal>
   </div>
 </template>
 
@@ -106,6 +107,8 @@ import axios from 'axios';
 const { VITE_URL, VITE_PATH } = import.meta.env;
 // 導入 bs modal
 import { Modal } from 'bootstrap';
+// 導入 productModal 元件
+import ProductModal from '@/components/ProductModal.vue';
 
 export default {
   data() {
@@ -131,17 +134,21 @@ export default {
           alert(err.response.data.message);
         });
     },
+    // 開啟 modal 並帶入商品資料
     openModal(product) {
       this.tempProduct = product;
-      this.productModal.show();
-      console.log(this.tempProduct);
+      // this.productModal.show();
+      this.$refs.productModal.openModal();
     }
   },
   mounted() {
     this.getProducts();
-    this.productModal = new Modal(this.$refs.productModal, {
-      Keyboard: false
-    });
+    // this.productModal = new Modal(this.$refs.productModal, {
+    //   Keyboard: false
+    // });
+  },
+  components: {
+    ProductModal
   }
 };
 </script>
