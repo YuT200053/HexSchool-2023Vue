@@ -4,7 +4,8 @@
     <nav>
       <RouterLink to="/">回到前台</RouterLink> │
       <RouterLink to="/admin/products">後台產品列表</RouterLink> │
-      <RouterLink to="/admin/order">後台訂單</RouterLink>
+      <RouterLink to="/admin/order">後台訂單</RouterLink> │
+      <RouterLink to="/admin">登出</RouterLink>
     </nav>
     <routerView></routerView>
   </div>
@@ -23,7 +24,7 @@ export default {
       axios
         .post(api)
         .then(() => {
-          console.log('讚');
+          console.log('驗證成功');
         })
         .catch((err) => {
           alert(err.response.data.message);
