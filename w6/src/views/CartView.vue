@@ -1,13 +1,14 @@
 <template>
   <div class="container">
-    <FullLoading :active="isLoading" />
+    <VueLoading :active="isLoading" />
     <h2 class="text-center">前台購物車</h2>
     <div class="text-end my-3">
+      <!-- 當購物車是空的，則無法空清購物車 -->
       <button
         type="button"
         class="btn btn-outline-danger"
         @click.prevent="deleteAll"
-        :disabled="loadingStatus.loadingItem === true"
+        :disabled="(loadingStatus.loadingItem === true) | (carts.total === 0)"
       >
         清空購物車
       </button>
@@ -37,10 +38,12 @@
           <td>{{ cart.product.title }}</td>
           <td>
             <div class="input-group">
+              <!-- select 更換數量時購物車數量也要一起更動 -->
               <select
                 class="form-select"
                 id="cart"
                 v-model="cart.qty"
+                @change="changeCartQty(cart, cart.qty)"
                 :disabled="loadingStatus.loadingItem === cart.id"
               >
                 <option v-for="i in 20" :key="i" :value="i">{{ i }}</option>
@@ -64,7 +67,8 @@
     </table>
     <!-- 訂購資訊 -->
     <div class="row">
-      <VeeForm @submit="Submit" ref="form" class="col-md-6" v-slot="{ errors }">
+      <!-- submit 時建立訂單 -->
+      <VeeForm @submit="createOrder" ref="form" class="col-md-6" v-slot="{ errors }">
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
           <VeeField
@@ -126,7 +130,10 @@
           <textarea id="message" name="留言" class="form-control" v-model="form.message"></textarea>
         </div>
         <div class="text-end">
-          <button type="submit" class="btn btn-danger">送出訂單</button>
+          <!-- 當購物車是空的，則無法送出訂單 -->
+          <button type="submit" class="btn btn-danger mb-5" :disabled="carts.total === 0">
+            送出訂單
+          </button>
         </div>
       </VeeForm>
     </div>
@@ -166,9 +173,6 @@ export default {
         this.isLoading = false;
       });
     },
-    Submit() {
-      console.log(this.form);
-    },
     deleteCart(id) {
       const api = `${VITE_URL}/api/${VITE_PATH}/cart/${id}`;
       this.loadingStatus.loadingItem = id;
@@ -194,6 +198,49 @@ export default {
           alert(res.data.message);
           this.getCart();
           this.loadingStatus.loadingItem = '';
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    // 更改購物車品項數量
+    changeCartQty(cart, qty) {
+      const order = {
+        product_id: cart.product_id,
+        qty
+      };
+      // 這裡要帶購物車 id
+      const api = `${VITE_URL}/api/${VITE_PATH}/cart/${cart.id}`;
+
+      this.isLoading = true;
+
+      // 更新購物車用 put
+      axios
+        .put(api, { data: order })
+        .then((res) => {
+          alert(res.data.message);
+          this.getCart();
+          this.isLoading = false;
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    // 建立訂單
+    createOrder() {
+      const api = `${VITE_URL}/api/${VITE_PATH}/order`;
+      const order = this.form;
+
+      this.isLoading = true;
+
+      axios
+        .post(api, { data: order })
+        .then((res) => {
+          alert(res.data.message);
+          // 清空表單
+          this.$refs.form.resetForm();
+          this.getCart();
+          this.isLoading = false;
         })
         .catch((err) => {
           alert(err.response.data.message);
