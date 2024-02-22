@@ -1,14 +1,12 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterLink, RouterView } from 'vue-router';
 
 export default {
   components: {
     RouterLink,
-    RouterView,
-    HelloWorld
+    RouterView
   }
-}
+};
 </script>
 
 <template>
