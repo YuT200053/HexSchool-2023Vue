@@ -1,5 +1,6 @@
 <template>
   <div class="container mx-auto">
+    <VueLoading :active="isLoading" />
     <h2 class="text-center">後台產品列表</h2>
     <div class="text-end my-3">
       <button type="button" class="btn btn-primary" @click.prevent="openModal('add')">
@@ -86,7 +87,8 @@ export default {
       tempProduct: {
         imagesUrl: []
       },
-      deleteModal: ''
+      deleteModal: '',
+      isLoading: false
     };
   },
   components: {
@@ -98,12 +100,14 @@ export default {
     // 預設頁面為 1
     getProducts(page = 1) {
       const api = `${VITE_URL}/api/${VITE_PATH}/admin/products?page=${page}`;
+      this.isLoading = true;
 
       axios
         .get(api)
         .then((res) => {
           this.products = res.data.products;
           this.pagination = res.data.pagination;
+          this.isLoading = false;
         })
         .catch((err) => {
           alert(err.response.data.message);
@@ -111,6 +115,8 @@ export default {
     },
     // 判斷開啟哪個 modal
     openModal(isNew, item) {
+      this.isLoading = true;
+
       if (isNew === 'add') {
         this.isNew = true;
         this.tempProduct = {
@@ -119,7 +125,7 @@ export default {
         // 初始化完成後，可用名稱直接叫
         this.$refs.editModal.openModal();
 
-        console.log(this.isNew);
+        this.isLoading = false;
       } else if (isNew === 'edit') {
         this.isNew === false;
         // 展開 item 賦予給 tempProduct
@@ -128,11 +134,13 @@ export default {
         this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
         this.$refs.editModal.openModal();
 
-        console.log(this.isNew);
+        this.isLoading = false;
       } else if (isNew === 'delete') {
         this.tempProduct = { ...item };
         this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
         this.$refs.deleteModal.openModal();
+
+        this.isLoading = false;
       }
     },
     // 判斷是編輯產品還是新增
@@ -147,11 +155,14 @@ export default {
         http = 'put';
       }
 
+      this.isLoading = true;
+
       axios[http](api, { data: this.tempProduct })
         .then((res) => {
           alert(res.data.message);
           this.$refs.editModal.hideModal();
           this.getProducts();
+          this.isLoading = false;
         })
         .catch((err) => {
           alert(err.response.data.message);
@@ -160,6 +171,7 @@ export default {
     // 刪除產品
     deleteProduct() {
       const api = `${VITE_URL}/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`;
+      this.isLoading = true;
 
       axios
         .delete(api)
@@ -167,6 +179,7 @@ export default {
           alert(res.data.message);
           this.$refs.deleteModal.hideModal();
           this.getProducts();
+          this.isLoading = false;
         })
         .catch((err) => {
           alert(err.response.data.message);

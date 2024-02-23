@@ -3,7 +3,9 @@
     <h1 class="text-center">後台</h1>
     <nav class="mx-auto text-center my-3">
       <RouterLink to="/admin/products">後台產品列表</RouterLink> │
-      <RouterLink to="/admin/orders">orders</RouterLink> │<RouterLink to="" @click.prevent="logout"
+      <RouterLink to="/admin/orders">後台訂單</RouterLink> │<RouterLink
+        to=""
+        @click.prevent="logout"
         >登出</RouterLink
       >
     </nav>
