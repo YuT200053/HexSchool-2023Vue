@@ -43,7 +43,13 @@
           </td>
           <td>
             <div class="btn-group btn-group-sm" role="group" aria-label="edit">
-              <button type="button" class="btn btn-outline-primary">檢視</button>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                @click.prevent="openModal(order)"
+              >
+                檢視
+              </button>
               <button type="button" class="btn btn-outline-danger">刪除</button>
             </div>
           </td>
@@ -52,12 +58,126 @@
     </table>
     <!-- 頁碼 -->
     <PaginationComponent :pagination="pagination" @get-products="getOrders"></PaginationComponent>
+    <!-- 檢視 modal -->
+    <div
+      class="modal fade"
+      id="orderModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      ref="orderModal"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header bg-dark">
+            <h5 class="modal-title text-white">訂單細節</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-4">
+                <h3>用戶資料</h3>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th>姓名</th>
+                      <td>{{ tempOrder.user.name }}</td>
+                    </tr>
+                    <tr>
+                      <th>Email</th>
+                      <td>{{ tempOrder.user.email }}</td>
+                    </tr>
+                    <tr>
+                      <th>電話</th>
+                      <td>{{ tempOrder.user.tel }}</td>
+                    </tr>
+                    <tr>
+                      <th>地址</th>
+                      <td>{{ tempOrder.user.address }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-8">
+                <h3>訂單細節</h3>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th>訂單編號</th>
+                      <td>{{ tempOrder.id }}</td>
+                    </tr>
+                    <tr>
+                      <th>下單時間</th>
+                      <td>{{ new Date(tempOrder.create_at * 1000).toLocaleDateString() }}</td>
+                    </tr>
+                    <tr>
+                      <th>付款時間</th>
+                      <td>
+                        <!-- 如果有 paid_date 則顯示付款時間，沒有則出現尚未付款 -->
+                        <span v-if="tempOrder.paid_date">
+                          {{ new Date(tempOrder.paid_date * 1000).toLocaleDateString() }}</span
+                        >
+                        <span v-else class="text-muted">尚未付款</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>付款狀態</th>
+                      <td>
+                        <strong v-if="tempOrder.is_paid" class="text-success">已付款</strong>
+                        <span v-else class="text-muted">尚未付款</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>總金額</th>
+                      <td>{{ tempOrder.total }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <h3>選購商品</h3>
+                <table class="table">
+                  <tr v-for="product in tempOrder.products" :key="product.id">
+                    <th>{{ product.product.title }}</th>
+                    <td>{{ product.qty }} / {{ product.product.unit }}</td>
+                    <td>{{ product.total }}</td>
+                  </tr>
+                </table>
+                <div class="form-check d-flex justify-content-end">
+                  <input
+                    class="form-check-input me-1"
+                    type="checkbox"
+                    value=""
+                    id="is_paid"
+                    v-model="tempOrder.is_paid"
+                  />
+                  <label class="form-check-label" for="is_paid">
+                    <span v-if="tempOrder.is_paid">已付款</span>
+                    <span v-else>未付款</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              取消
+            </button>
+            <button type="button" class="btn btn-primary">修改付款狀態</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import PaginationComponent from '@/components/PaginationComponent.vue';
+import { Modal } from 'bootstrap';
 
 const { VITE_URL, VITE_PATH } = import.meta.env;
 
@@ -66,7 +186,9 @@ export default {
     return {
       orders: {},
       pagination: {},
-      isLoading: false
+      isLoading: false,
+      orderModal: '',
+      tempOrder: {}
     };
   },
   components: {
@@ -87,10 +209,20 @@ export default {
         .catch((err) => {
           alert(err.response.data.message);
         });
+    },
+    // 一樣用淺層複製將該訂單帶入 tempOrder
+    openModal(order) {
+      this.tempOrder = { ...order };
+      this.orderModal.show();
+      console.log(this.tempOrder);
     }
   },
   mounted() {
     this.getOrders();
+    this.orderModal = new Modal(this.$refs.orderModal, {
+      keyboard: false,
+      backdrop: 'static'
+    });
   }
 };
 </script>
