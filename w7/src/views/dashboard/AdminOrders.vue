@@ -29,12 +29,14 @@
           <td>{{ order.total }}</td>
           <td>
             <div class="form-check form-switch">
+              <!-- 已付款時切為 checked 狀態 -->
               <input
                 class="form-check-input"
                 type="checkbox"
                 role="switch"
                 :id="`paidSwitch${order.id}`"
                 v-modal="order.is_paid"
+                :checked="order.is_paid"
               />
               <label class="form-check-label" :for="`paidSwitch${order.id}`">
                 <span v-if="order.is_paid">已付款</span><span v-else>未付款</span></label
@@ -83,7 +85,8 @@
               <div class="col-4">
                 <h3>用戶資料</h3>
                 <table class="table">
-                  <tbody>
+                  <!-- 需先判斷是否為空值，否則會噴錯 -->
+                  <tbody v-if="tempOrder.user">
                     <tr>
                       <th>姓名</th>
                       <td>{{ tempOrder.user.name }}</td>
@@ -166,7 +169,9 @@
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
               取消
             </button>
-            <button type="button" class="btn btn-primary">修改付款狀態</button>
+            <button type="button" class="btn btn-primary" @click.prevent="updateOrder(tempOrder)">
+              修改付款狀態
+            </button>
           </div>
         </div>
       </div>
@@ -195,8 +200,9 @@ export default {
     PaginationComponent
   },
   methods: {
-    getOrders() {
-      const api = `${VITE_URL}/api/${VITE_PATH}/admin/orders`;
+    // 一樣要帶入頁碼
+    getOrders(page = 1) {
+      const api = `${VITE_URL}/api/${VITE_PATH}/admin/orders?page=${page}`;
 
       axios
         .get(api)
@@ -214,7 +220,24 @@ export default {
     openModal(order) {
       this.tempOrder = { ...order };
       this.orderModal.show();
-      console.log(this.tempOrder);
+    },
+    // 修改付款資訊
+    updateOrder(order) {
+      const api = `${VITE_URL}/api/${VITE_PATH}/admin/order/${order.id}`;
+      const paid = {
+        is_paid: order.is_paid
+      };
+
+      axios
+        .put(api, { data: paid })
+        .then((res) => {
+          alert(res.data.message);
+          this.orderModal.hide();
+          this.getOrders(this.pagination.current_page);
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     }
   },
   mounted() {
