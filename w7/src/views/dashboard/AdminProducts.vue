@@ -59,39 +59,11 @@
       @edit-product="editProduct"
     ></EditModal>
     <!-- 刪除產品 modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
+    <DeleteModal
       ref="deleteModal"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header bg-danger">
-            <h5 class="modal-title text-white">刪除產品</h5>
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            是否刪除
-            <strong class="text-danger"> {{ tempProduct.title }} </strong>
-            商品 (刪除後將無法恢復)。
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              取消
-            </button>
-            <button type="button" class="btn btn-danger">確認刪除</button>
-          </div>
-        </div>
-      </div>
-    </div>
+      :temp-product="tempProduct"
+      @delete-product="deleteProduct"
+    ></DeleteModal>
   </div>
 </template>
 
@@ -99,7 +71,7 @@
 import axios from 'axios';
 import PaginationComponent from '@/components/PaginationComponent.vue';
 import EditModal from '@/components/EditModal.vue';
-import { Modal } from 'bootstrap';
+import DeleteModal from '@/components/DeleteModal.vue';
 
 const { VITE_URL, VITE_PATH } = import.meta.env;
 
@@ -119,7 +91,8 @@ export default {
   },
   components: {
     PaginationComponent,
-    EditModal
+    EditModal,
+    DeleteModal
   },
   methods: {
     // 預設頁面為 1
@@ -159,7 +132,7 @@ export default {
       } else if (isNew === 'delete') {
         this.tempProduct = { ...item };
         this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
-        this.deleteModal.show();
+        this.$refs.deleteModal.openModal();
       }
     },
     // 判斷是編輯產品還是新增
@@ -183,14 +156,25 @@ export default {
         .catch((err) => {
           alert(err.response.data.message);
         });
+    },
+    // 刪除產品
+    deleteProduct() {
+      const api = `${VITE_URL}/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`;
+
+      axios
+        .delete(api)
+        .then((res) => {
+          alert(res.data.message);
+          this.$refs.deleteModal.hideModal();
+          this.getProducts();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     }
   },
   mounted() {
     this.getProducts();
-    this.deleteModal = new Modal(this.$refs.deleteModal, {
-      keyboard: false,
-      backdrop: 'static'
-    });
   }
 };
 </script>
