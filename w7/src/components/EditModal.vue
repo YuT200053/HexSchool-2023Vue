@@ -26,13 +26,26 @@
           <div class="row">
             <div class="col-4">
               <div class="mb-3">
-                <label for="imageUrl" class="form-label">主要圖片</label
+                <label for="imageUrl" class="form-label">輸入主要圖片網址</label
                 ><input
                   type="text"
                   id="imageUrl"
                   class="form-control"
                   placeholder="請輸入圖片連結"
                   v-model="tempProduct.imageUrl"
+                />
+              </div>
+              <!-- 上傳圖片 -->
+              <div class="mb-3">
+                <VueLoading :active="isLoading" :is-full-page="fullPage" />
+                <label for="uploadImg" class="form-label">或 上傳主要圖片</label>
+                <!-- 當上傳檔案造成 change 時觸發函式 -->
+                <input
+                  type="file"
+                  class="form-control"
+                  id="uploadImg"
+                  ref="uploadImg"
+                  @change="uploadImg"
                 />
               </div>
               <img class="w-100 mb-3" :src="tempProduct.imageUrl" :alt="tempProduct.title" />
@@ -173,12 +186,17 @@
 
 <script>
 // 要記得導入 Modal js
+import axios from 'axios';
 import { Modal } from 'bootstrap';
+
+const { VITE_URL, VITE_PATH } = import.meta.env;
 
 export default {
   data() {
     return {
-      editModal: ''
+      editModal: '',
+      isLoading: false,
+      fullPage: false
     };
   },
   props: ['tempProduct', 'isNew'],
@@ -191,6 +209,35 @@ export default {
     },
     editProduct() {
       this.$emit('editProduct');
+    },
+    // 上傳檔案
+    uploadImg() {
+      const api = `${VITE_URL}/api/${VITE_PATH}/admin/upload`;
+      // 上傳的檔案
+      const file = this.$refs.uploadImg.files[0];
+      // 建立 js 物件產生表單格式
+      const formData = new FormData();
+      // 使用 append 方法，把檔案欄位夾帶進去，前面是 'input 的 name'，後面是要上傳的檔案 也就是上面的 file
+      formData.append('file-to-upload', file);
+
+      this.isLoading = true;
+
+      //上傳檔案
+      axios
+        .post(api, formData)
+        .then((res) => {
+          alert('圖片已上傳！');
+          // 暫存資料的主要圖片變成目前上傳的照片
+          // eslint-disable-next-line vue/no-mutating-props
+          this.tempProduct.imageUrl = res.data.imageUrl;
+          // 清空資料
+          this.$refs.uploadImg.value = '';
+
+          this.isLoading = false;
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     }
   },
   mounted() {
