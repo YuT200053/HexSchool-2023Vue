@@ -10,7 +10,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-danger">
-          <h5 class="modal-title text-white">刪除產品</h5>
+          <h5 class="modal-title text-white">刪除{{ tempItem.title }}</h5>
           <button
             type="button"
             class="btn-close btn-close-white"
@@ -20,16 +20,14 @@
         </div>
         <div class="modal-body">
           是否刪除
-          <strong class="text-danger"> {{ tempProduct.title }} </strong>
-          商品 (刪除後將無法恢復)。
+          <strong class="text-danger"> {{ tempItem.title }} </strong>
+          (刪除後將無法恢復)。
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             取消
           </button>
-          <button type="button" class="btn btn-danger" @click.prevent="deleteProduct">
-            確認刪除
-          </button>
+          <button type="button" class="btn btn-danger" @click.prevent="deleteItem">確認刪除</button>
         </div>
       </div>
     </div>
@@ -45,7 +43,7 @@ export default {
       deleteModal: ''
     };
   },
-  props: ['tempProduct'],
+  props: ['tempItem'],
   methods: {
     openModal() {
       this.deleteModal.show();
@@ -53,8 +51,8 @@ export default {
     hideModal() {
       this.deleteModal.hide();
     },
-    deleteProduct() {
-      this.$emit('deleteProduct');
+    deleteItem() {
+      this.$emit('deleteItem');
     }
   },
   mounted() {

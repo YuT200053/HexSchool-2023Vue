@@ -62,8 +62,8 @@
     <!-- 刪除產品 modal -->
     <DeleteModal
       ref="deleteModal"
-      :temp-product="tempProduct"
-      @delete-product="deleteProduct"
+      :temp-item="tempProduct"
+      @delete-item="deleteProduct"
     ></DeleteModal>
   </div>
 </template>

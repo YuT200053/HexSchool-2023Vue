@@ -30,6 +30,7 @@
           <td>
             <div class="form-check form-switch">
               <!-- 已付款時切為 checked 狀態 -->
+              <!-- 當變更 input 狀態時，觸發 updateOrder -->
               <input
                 class="form-check-input"
                 type="checkbox"
@@ -37,6 +38,7 @@
                 :id="`paidSwitch${order.id}`"
                 v-modal="order.is_paid"
                 :checked="order.is_paid"
+                @change="updateOrder(order)"
               />
               <label class="form-check-label" :for="`paidSwitch${order.id}`">
                 <span v-if="order.is_paid">已付款</span><span v-else>未付款</span></label
@@ -48,11 +50,17 @@
               <button
                 type="button"
                 class="btn btn-outline-primary"
-                @click.prevent="openModal(order)"
+                @click.prevent="openModal(order, 'view')"
               >
                 檢視
               </button>
-              <button type="button" class="btn btn-outline-danger">刪除</button>
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                @click.prevent="openModal(order, 'delete')"
+              >
+                刪除
+              </button>
             </div>
           </td>
         </tr>
@@ -62,6 +70,8 @@
     <PaginationComponent :pagination="pagination" @get-products="getOrders"></PaginationComponent>
     <!-- 檢視 modal -->
     <OrderModal ref="orderModal" :temp-order="tempOrder" @update-order="updateOrder"></OrderModal>
+    <!-- 刪除 modal -->
+    <DeleteModal ref="deleteModal" :temp-item="tempOrder" @delete-item="deleteOrder"></DeleteModal>
   </div>
 </template>
 
@@ -69,6 +79,7 @@
 import axios from 'axios';
 import PaginationComponent from '@/components/PaginationComponent.vue';
 import OrderModal from '@/components/OrderModal.vue';
+import DeleteModal from '@/components/DeleteModal.vue';
 
 const { VITE_URL, VITE_PATH } = import.meta.env;
 
@@ -78,18 +89,19 @@ export default {
       orders: {},
       pagination: {},
       isLoading: false,
-      orderModal: '',
       tempOrder: {}
     };
   },
   components: {
     PaginationComponent,
-    OrderModal
+    OrderModal,
+    DeleteModal
   },
   methods: {
     // 一樣要帶入頁碼
     getOrders(page = 1) {
       const api = `${VITE_URL}/api/${VITE_PATH}/admin/orders?page=${page}`;
+      this.isLoading = true;
 
       axios
         .get(api)
@@ -97,16 +109,24 @@ export default {
           // 把資料帶進 data 中
           this.orders = res.data.orders;
           this.pagination = res.data.pagination;
-          console.log(this.orders[0]);
+          this.isLoading = false;
         })
         .catch((err) => {
           alert(err.response.data.message);
         });
     },
     // 一樣用淺層複製將該訂單帶入 tempOrder
-    openModal(order) {
+    openModal(order, isView) {
       this.tempOrder = { ...order };
-      this.$refs.orderModal.openModal();
+      this.isLoading = true;
+
+      if (isView === 'view') {
+        this.$refs.orderModal.openModal();
+        this.isLoading = false;
+      } else if (isView === 'delete') {
+        this.$refs.deleteModal.openModal();
+        this.isLoading = false;
+      }
     },
     // 修改付款資訊
     updateOrder(order) {
@@ -114,6 +134,7 @@ export default {
       const paid = {
         is_paid: order.is_paid
       };
+      this.isLoading = true;
 
       axios
         .put(api, { data: paid })
@@ -121,6 +142,24 @@ export default {
           alert(res.data.message);
           this.$refs.orderModal.hideModal();
           this.getOrders(this.pagination.current_page);
+          this.isLoading = false;
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    // 刪除訂單
+    deleteOrder() {
+      const api = `${VITE_URL}/api/${VITE_PATH}/admin/order/${this.tempOrder.id}`;
+      this.isLoading = true;
+
+      axios
+        .delete(api)
+        .then((res) => {
+          alert(res.data.message);
+          this.getOrders(this.pagination.current_page);
+          this.$refs.deleteModal.hideModal();
+          this.isLoading = false;
         })
         .catch((err) => {
           alert(err.response.data.message);
