@@ -126,8 +126,11 @@ export default {
         this.$refs.editModal.openModal();
 
         this.isLoading = false;
+
+        console.log(this.isNew);
       } else if (isNew === 'edit') {
-        this.isNew === false;
+        // 這邊不是用 === 判斷，而是 = 賦予
+        this.isNew = false;
         // 展開 item 賦予給 tempProduct
         this.tempProduct = { ...item };
         // tempProduct.imagesUrl 要補上空陣列，否則沒有東西會出錯
@@ -135,6 +138,8 @@ export default {
         this.$refs.editModal.openModal();
 
         this.isLoading = false;
+
+        console.log(this.isNew);
       } else if (isNew === 'delete') {
         this.tempProduct = { ...item };
         this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
@@ -154,6 +159,8 @@ export default {
         api = `${VITE_URL}/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`;
         http = 'put';
       }
+
+      console.log(http, api);
 
       this.isLoading = true;
 

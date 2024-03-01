@@ -36,7 +36,7 @@
                 type="checkbox"
                 role="switch"
                 :id="`paidSwitch${order.id}`"
-                v-modal="order.is_paid"
+                v-model="order.is_paid"
                 :checked="order.is_paid"
                 @change="updateOrder(order)"
               />
