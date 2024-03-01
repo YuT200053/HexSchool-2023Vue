@@ -124,7 +124,8 @@
                     id="origin_price"
                     class="form-control"
                     placeholder="請輸入原價"
-                    v-model="tempProduct.origin_price"
+                    v-model.number="tempProduct.origin_price"
+                    min="0"
                   />
                 </div>
                 <div class="col-6 mb-3">
@@ -134,7 +135,8 @@
                     id="price"
                     class="form-control"
                     placeholder="請輸入售價"
-                    v-model="tempProduct.price"
+                    v-model.number="tempProduct.price"
+                    min="0"
                   />
                 </div>
               </div>
