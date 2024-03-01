@@ -113,6 +113,7 @@ export default {
         })
         .catch((err) => {
           alert(err.response.data.message);
+          this.isLoading = false;
         });
     },
     // 一樣用淺層複製將該訂單帶入 tempOrder
@@ -146,6 +147,7 @@ export default {
         })
         .catch((err) => {
           alert(err.response.data.message);
+          this.isLoading = false;
         });
     },
     // 刪除訂單
@@ -163,6 +165,7 @@ export default {
         })
         .catch((err) => {
           alert(err.response.data.message);
+          this.isLoading = false;
         });
     }
   },

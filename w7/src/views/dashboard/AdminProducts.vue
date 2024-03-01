@@ -111,6 +111,7 @@ export default {
         })
         .catch((err) => {
           alert(err.response.data.message);
+          this.isLoading = false;
         });
     },
     // 判斷開啟哪個 modal
@@ -126,8 +127,6 @@ export default {
         this.$refs.editModal.openModal();
 
         this.isLoading = false;
-
-        console.log(this.isNew);
       } else if (isNew === 'edit') {
         // 這邊不是用 === 判斷，而是 = 賦予
         this.isNew = false;
@@ -138,8 +137,6 @@ export default {
         this.$refs.editModal.openModal();
 
         this.isLoading = false;
-
-        console.log(this.isNew);
       } else if (isNew === 'delete') {
         this.tempProduct = { ...item };
         this.tempProduct.imagesUrl = this.tempProduct.imagesUrl || [];
@@ -173,6 +170,7 @@ export default {
         })
         .catch((err) => {
           alert(err.response.data.message);
+          this.isLoading = false;
         });
     },
     // 刪除產品
@@ -190,6 +188,7 @@ export default {
         })
         .catch((err) => {
           alert(err.response.data.message);
+          this.isLoading = false;
         });
     }
   },
